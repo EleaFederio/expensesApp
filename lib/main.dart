@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:personalexpences/models/transaction.dart';
+import 'package:personalexpences/widgets/chart.dart';
 import 'package:personalexpences/widgets/new_transaction.dart';
 import 'package:personalexpences/widgets/transaction_list.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         secondaryHeaderColor: Colors.amber,
         accentColor: Colors.orange[800],
+        backgroundColor: Colors.blue[100],
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
             title: TextStyle(
@@ -43,10 +45,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    Transaction(id: 't1', title: 'Power', amount: 23.55, date: DateTime.now()),
-    Transaction(id: 't1', title: 'Wind', amount: 10.50, date: DateTime.now()),
-    Transaction(id: 't1', title: 'Adobo', amount: 10.50, date: DateTime.now())
+    // Transaction(id: 't1', title: 'Power', amount: 23.55, date: DateTime.now()),
+    // Transaction(id: 't1', title: 'Wind', amount: 10.50, date: DateTime.now()),
+    // Transaction(id: 't1', title: 'Adobo', amount: 10.50, date: DateTime.now())
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   void _addNewTransaction(String transactionTitle, double transactionAmount) {
     final newTransaction = Transaction(
@@ -88,7 +96,14 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => _startAddNewTransaction(context)),
         ],
       ),
-      body: SingleChildScrollView(child: TransactionList(_userTransactions)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Chart(_recentTransactions),
+            TransactionList(_userTransactions),
+          ],
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
           child: Icon(
