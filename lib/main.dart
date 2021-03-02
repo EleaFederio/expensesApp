@@ -6,11 +6,9 @@ import 'package:personalexpences/widgets/new_transaction.dart';
 import 'package:personalexpences/widgets/transaction_list.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp());
 }
 
@@ -54,6 +52,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
+
   final List<Transaction> _userTransactions = [
     // Transaction(id: 't1', title: 'Cheese Cake', amount: 23.55, date: DateTime.now()),
     // Transaction(id: 't1', title: 'Wind', amount: 10.50, date: DateTime.now()),
@@ -103,15 +103,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // check the mobile device orientation
+    final isLandScape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
-    final curScaleFactor = MediaQuery.of(context).textScaleFactor;
+    // save mediaQuery to one variable
+    final mediaQuery = MediaQuery.of(context);
+
+    final curScaleFactor = mediaQuery.textScaleFactor;
 
     final appBarComponent = AppBar(
       title: Text(
         'Gastoz',
-        style: TextStyle(
-          fontSize: 20 * curScaleFactor
-        ),
+        style: TextStyle(fontSize: 20 * curScaleFactor),
       ),
       actions: <Widget>[
         IconButton(
@@ -121,19 +125,56 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
+    final _constructionListWidget = Container(
+        height: (mediaQuery.size.height -
+                appBarComponent.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.7,
+        child: TransactionList(_userTransactions, _deleteTransaction));
+
+    print('isLandScape ? ${isLandScape}');
+
     return Scaffold(
       appBar: appBarComponent,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              height: (MediaQuery.of(context).size.height - appBarComponent.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
-              child: Chart(_recentTransactions)
-            ),
-            Container(
-              height: (MediaQuery.of(context).size.height - appBarComponent.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
-              child: TransactionList(_userTransactions, _deleteTransaction)
-            ),
+            // check the isLandScape variable and deside if the Switch widget will be shown
+            if (isLandScape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  )
+                ],
+              ),
+            // using if condition to detect eathier it is landsacpe or portrait
+            if (!isLandScape)
+              Container(
+                  height: (mediaQuery.size.height -
+                          appBarComponent.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.3,
+                  child: Chart(_recentTransactions)),
+            if (!isLandScape) _constructionListWidget,
+
+            if (isLandScape)
+              // check if _showChart is true or false
+              _showChart
+                  ? Container(
+                      height: (mediaQuery.size.height -
+                              appBarComponent.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions))
+                  : _constructionListWidget,
           ],
         ),
       ),

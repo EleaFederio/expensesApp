@@ -13,21 +13,23 @@ class TransactionList extends StatelessWidget {
       width: double.infinity,
       color: Theme.of(context).backgroundColor,
       child: transactions.isEmpty
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
-                ),
-                Container(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
+          ? LayoutBuilder(builder: (context, constraints) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
                   ),
-                )
-              ],
-            )
+                  Container(
+                    height: constraints.maxHeight * 0.6,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ],
+              );
+            })
           : ListView.builder(
               itemBuilder: (context, item) {
                 return Card(
@@ -50,12 +52,20 @@ class TransactionList extends StatelessWidget {
                     ),
                     subtitle: Text(DateFormat.yMMMMEEEEd()
                         .format(transactions[item].date)),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Theme.of(context).accentColor,
-                      onPressed: () =>
-                          deleteTransactiomn(transactions[item].id),
-                    ),
+                    // show or hide the button text base on screen size
+                    trailing: MediaQuery.of(context).size.width > 350
+                        ? FlatButton.icon(
+                            icon: Icon(Icons.delete),
+                            label: Text('delete'),
+                            textColor: Theme.of(context).errorColor,
+                            onPressed: () {},
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Theme.of(context).accentColor,
+                            onPressed: () =>
+                                deleteTransactiomn(transactions[item].id),
+                          ),
                   ),
                 );
               },

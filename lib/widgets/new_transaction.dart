@@ -48,50 +48,56 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      // wrap column with container to create spacing inside the column
-      child: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(labelText: 'Title'),
-                controller: _titleController,
-                onSubmitted: (_) => _submitData,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Amount'),
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                // i get an argument but i don't care about it
-                onSubmitted: (_) => _submitData,
-              ),
-              Container(
-                height: 70,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(_selectedDate == null
-                          ? 'No date choosen'
-                          : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}'),
-                    ),
-                    FlatButton(
-                        textColor: Theme.of(context).primaryColor,
-                        child: Text('Choose Date',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        onPressed: _presentDatePicker)
-                  ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        // wrap column with container to create spacing inside the column
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10.0,
+              left: 10.0,
+              right: 10.0,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(labelText: 'Title'),
+                  controller: _titleController,
+                  onSubmitted: (_) => _submitData,
                 ),
-              ),
-              RaisedButton(
-                color: Theme.of(context).secondaryHeaderColor,
-                child: Text('Add Transaction'),
-                textColor: Theme.of(context).primaryColorDark,
-                onPressed: _submitData,
-              )
-            ]),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Amount'),
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  // i get an argument but i don't care about it
+                  onSubmitted: (_) => _submitData,
+                ),
+                Container(
+                  height: 70,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(_selectedDate == null
+                            ? 'No date choosen'
+                            : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}'),
+                      ),
+                      FlatButton(
+                          textColor: Theme.of(context).primaryColor,
+                          child: Text('Choose Date',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          onPressed: _presentDatePicker)
+                    ],
+                  ),
+                ),
+                RaisedButton(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  child: Text('Add Transaction'),
+                  textColor: Theme.of(context).primaryColorDark,
+                  onPressed: _submitData,
+                )
+              ]),
+        ),
       ),
     );
   }
