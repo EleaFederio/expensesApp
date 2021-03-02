@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:personalexpences/models/transaction.dart';
 import 'package:personalexpences/widgets/chart.dart';
 import 'package:personalexpences/widgets/new_transaction.dart';
 import 'package:personalexpences/widgets/transaction_list.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(MyApp());
 }
 
@@ -97,21 +103,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Expenz'),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              color: Colors.white,
-              onPressed: () => _startAddNewTransaction(context)),
-        ],
+
+    final curScaleFactor = MediaQuery.of(context).textScaleFactor;
+
+    final appBarComponent = AppBar(
+      title: Text(
+        'Gastoz',
+        style: TextStyle(
+          fontSize: 20 * curScaleFactor
+        ),
       ),
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.add),
+            color: Colors.white,
+            onPressed: () => _startAddNewTransaction(context)),
+      ],
+    );
+
+    return Scaffold(
+      appBar: appBarComponent,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_userTransactions, _deleteTransaction),
+            Container(
+              height: (MediaQuery.of(context).size.height - appBarComponent.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
+              child: Chart(_recentTransactions)
+            ),
+            Container(
+              height: (MediaQuery.of(context).size.height - appBarComponent.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
+              child: TransactionList(_userTransactions, _deleteTransaction)
+            ),
           ],
         ),
       ),

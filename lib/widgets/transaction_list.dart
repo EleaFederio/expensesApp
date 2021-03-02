@@ -10,19 +10,14 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 500,
       width: double.infinity,
       color: Theme.of(context).backgroundColor,
       child: transactions.isEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  'Empty',
-                  style: TextStyle(),
-                ),
                 SizedBox(
-                  height: 10,
+                  height: MediaQuery.of(context).size.height * 0.1,
                 ),
                 Container(
                   height: 200,
