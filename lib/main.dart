@@ -51,8 +51,28 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool _showChart = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+    // super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    print('dispose');
+    super.dispose();
+  }
 
   final List<Transaction> _userTransactions = [];
 
@@ -97,8 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery, AppBar appBarComponent, Widget _constructionListWidget) {
-    return [Row(
+  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery,
+      AppBar appBarComponent, Widget _constructionListWidget) {
+    return [
+      Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Text('Show Chart'),
@@ -111,23 +133,30 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           )
         ],
-      ), _showChart
-      ? Container(
-          height: (mediaQuery.size.height -
-                  appBarComponent.preferredSize.height -
-                  mediaQuery.padding.top) *
-              0.7,
-          child: Chart(_recentTransactions))
-      : _constructionListWidget];
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appBarComponent.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions))
+          : _constructionListWidget
+    ];
   }
-  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery, AppBar appBarComponent, Widget _constructionListWidget) {
-    return [Container(
-    height: (mediaQuery.size.height -
-            appBarComponent.preferredSize.height -
-            mediaQuery.padding.top) *
-        0.3,
-    child: Chart(_recentTransactions)
-    ,), _constructionListWidget];
+
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,
+      AppBar appBarComponent, Widget _constructionListWidget) {
+    return [
+      Container(
+        height: (mediaQuery.size.height -
+                appBarComponent.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTransactions),
+      ),
+      _constructionListWidget
+    ];
   }
 
   @override
@@ -170,12 +199,14 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             // check the isLandScape variable and deside if the Switch widget will be shown
             if (isLandScape)
-            // spread all of the widget fron the _buildPortraitContent function *** List of Widget - Widgets ***
-              ..._buildLandscapeContent(mediaQuery, appBarComponent, _constructionListWidget),
+              // spread all of the widget fron the _buildPortraitContent function *** List of Widget - Widgets ***
+              ..._buildLandscapeContent(
+                  mediaQuery, appBarComponent, _constructionListWidget),
             // using if condition to detect eathier it is landsacpe or portrait
             if (!isLandScape)
               // spread all of the widget fron the _buildPortraitContent function *** List of Widget - Widgets ***
-              ..._buildPortraitContent(mediaQuery, appBarComponent, _constructionListWidget),
+              ..._buildPortraitContent(
+                  mediaQuery, appBarComponent, _constructionListWidget),
           ],
         ),
       ),
