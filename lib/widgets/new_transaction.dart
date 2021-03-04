@@ -62,12 +62,12 @@ class _NewTransactionState extends State<NewTransaction> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 TextField(
-                  decoration: InputDecoration(labelText: 'Title'),
+                  decoration: const InputDecoration(labelText: 'Title'),
                   controller: _titleController,
                   onSubmitted: (_) => _submitData,
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Amount'),
+                  decoration: const InputDecoration(labelText: 'Amount'),
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   // i get an argument but i don't care about it
@@ -92,7 +92,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 ),
                 RaisedButton(
                   color: Theme.of(context).secondaryHeaderColor,
-                  child: Text('Add Transaction'),
+                  child: const Text('Add Transaction'),
                   textColor: Theme.of(context).primaryColorDark,
                   onPressed: _submitData,
                 )

@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
             0.7,
         child: TransactionList(_userTransactions, _deleteTransaction));
 
-    print('isLandScape ? ${isLandScape}');
+    // print('isLandScape ? ${isLandScape}');
 
     return Scaffold(
       appBar: appBarComponent,
@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Show Chart'),
+                  const Text('Show Chart'),
                   Switch(
                     value: _showChart,
                     onChanged: (val) {
