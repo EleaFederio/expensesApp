@@ -40,7 +40,7 @@ class TransactionItem extends StatelessWidget {
                 icon: Icon(Icons.delete),
                 label: const Text('delete'),
                 textColor: Theme.of(context).errorColor,
-                onPressed: () {},
+                onPressed: () => deleteTransactiomn(transaction.id),
               )
             : IconButton(
                 icon: const Icon(Icons.delete),

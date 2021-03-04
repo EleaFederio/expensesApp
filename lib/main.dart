@@ -54,11 +54,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _showChart = false;
 
-  final List<Transaction> _userTransactions = [
-    // Transaction(id: 't1', title: 'Cheese Cake', amount: 23.55, date: DateTime.now()),
-    // Transaction(id: 't1', title: 'Wind', amount: 10.50, date: DateTime.now()),
-    // Transaction(id: 't1', title: 'Adobo', amount: 70.50, date: DateTime.now())
-  ];
+  final List<Transaction> _userTransactions = [];
 
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx) {
@@ -101,6 +97,39 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery, AppBar appBarComponent, Widget _constructionListWidget) {
+    return [Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Text('Show Chart'),
+          Switch(
+            value: _showChart,
+            onChanged: (val) {
+              setState(() {
+                _showChart = val;
+              });
+            },
+          )
+        ],
+      ), _showChart
+      ? Container(
+          height: (mediaQuery.size.height -
+                  appBarComponent.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.7,
+          child: Chart(_recentTransactions))
+      : _constructionListWidget];
+  }
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery, AppBar appBarComponent, Widget _constructionListWidget) {
+    return [Container(
+    height: (mediaQuery.size.height -
+            appBarComponent.preferredSize.height -
+            mediaQuery.padding.top) *
+        0.3,
+    child: Chart(_recentTransactions)
+    ,), _constructionListWidget];
+  }
+
   @override
   Widget build(BuildContext context) {
     // check the mobile device orientation
@@ -141,40 +170,12 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             // check the isLandScape variable and deside if the Switch widget will be shown
             if (isLandScape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text('Show Chart'),
-                  Switch(
-                    value: _showChart,
-                    onChanged: (val) {
-                      setState(() {
-                        _showChart = val;
-                      });
-                    },
-                  )
-                ],
-              ),
+            // spread all of the widget fron the _buildPortraitContent function *** List of Widget - Widgets ***
+              ..._buildLandscapeContent(mediaQuery, appBarComponent, _constructionListWidget),
             // using if condition to detect eathier it is landsacpe or portrait
             if (!isLandScape)
-              Container(
-                  height: (mediaQuery.size.height -
-                          appBarComponent.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.3,
-                  child: Chart(_recentTransactions)),
-            if (!isLandScape) _constructionListWidget,
-
-            if (isLandScape)
-              // check if _showChart is true or false
-              _showChart
-                  ? Container(
-                      height: (mediaQuery.size.height -
-                              appBarComponent.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.7,
-                      child: Chart(_recentTransactions))
-                  : _constructionListWidget,
+              // spread all of the widget fron the _buildPortraitContent function *** List of Widget - Widgets ***
+              ..._buildPortraitContent(mediaQuery, appBarComponent, _constructionListWidget),
           ],
         ),
       ),
